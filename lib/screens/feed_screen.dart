@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_4/resources/firestore_methods.dart';
 import 'package:flutter_application_4/utils/colors.dart';
 import 'package:flutter_application_4/utils/global_variable.dart';
+import 'package:flutter_application_4/utils/utils.dart';
 import 'package:flutter_application_4/widgets/post_card.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -12,6 +14,17 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
+  // deletePost(String postId) async {
+  //   try {
+  //     await FireStoreMethods().deletePost(postId);
+  //   } catch (err) {
+  //     showSnackBar(
+  //       context,
+  //       err.toString(),
+  //     );
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -52,18 +65,26 @@ class _FeedScreenState extends State<FeedScreen> {
                 vertical: width > webScreenSize ? 15 : 0,
               ),
               child: Dismissible(
-                background: Container(
-                  color: Colors.green,
-                  child: Icon(Icons.check),
-                ),
+                onDismissed: (direction) {
+                  setState(() {
+                    snapshot.data?.docs.removeAt(index);
+                  });
+                },
                 secondaryBackground: Container(
+                  child: Center(
+                    child: Text(
+                      'Delete',
+                      style: TextStyle(color: Colors.white, fontSize: 28),
+                    ),
+                  ),
                   color: Colors.red,
-                  child: Icon(Icons.cancel),
                 ),
-                key: Key('any keys'),
+                background: Container(),
                 child: PostCard(
                   snap: snapshot.data!.docs[index].data(),
                 ),
+                key: UniqueKey(),
+                direction: DismissDirection.endToStart,
               ),
             ),
           );
