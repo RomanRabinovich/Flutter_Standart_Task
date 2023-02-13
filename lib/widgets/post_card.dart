@@ -6,6 +6,7 @@ import 'package:flutter_application_4/resources/firestore_methods.dart';
 import 'package:flutter_application_4/utils/colors.dart';
 import 'package:flutter_application_4/utils/global_variable.dart';
 import 'package:flutter_application_4/utils/utils.dart';
+import 'package:flutter_application_4/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -134,8 +135,10 @@ class _PostCardState extends State<PostCard> {
                                                 child: Text(e),
                                               ),
                                               onTap: () {
-                                                deletePost(widget.snap['postId']
-                                                    .toString());
+                                                deletePost(
+                                                  widget.snap['postId']
+                                                      .toString(),
+                                                );
                                                 // remove the dialog box
                                                 Navigator.of(context).pop();
                                               }),
@@ -174,17 +177,63 @@ class _PostCardState extends State<PostCard> {
                     fit: BoxFit.cover,
                   ),
                 ),
+                AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: isLikeAnimating ? 1 : 0,
+                  child: LikeAnimation(
+                    isAnimating: isLikeAnimating,
+                    child: const Icon(
+                      Icons.favorite,
+                      color: Colors.white,
+                      size: 100,
+                    ),
+                    duration: const Duration(
+                      milliseconds: 400,
+                    ),
+                    onEnd: () {
+                      setState(() {
+                        isLikeAnimating = false;
+                      });
+                    },
+                  ),
+                ),
               ],
             ),
           ),
+          // LIKE, COMMENT SECTION OF THE POST
           Row(
             children: <Widget>[
-              const Icon(Icons.favorite),
+              LikeAnimation(
+                isAnimating: widget.snap['likes'].contains(user.uid),
+                smallLike: true,
+                child: IconButton(
+                  icon: widget.snap['likes'].contains(user.uid)
+                      ? const Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        )
+                      : const Icon(
+                          Icons.favorite_border,
+                        ),
+                  onPressed: () => FireStoreMethods().likePost(
+                    widget.snap['postId'].toString(),
+                    user.uid,
+                    widget.snap['likes'],
+                  ),
+                ),
+              ),
               IconButton(
                 icon: const Icon(
                   Icons.comment_outlined,
                 ),
                 onPressed: () {},
+                // onPressed: () => Navigator.of(context).push(
+                //   MaterialPageRoute(
+                //     builder: (context) => CommentsScreen(
+                //       postId: widget.snap['postId'].toString(),
+                //     ),
+                //   ),
+                // ),
               ),
               IconButton(
                   icon: const Icon(
@@ -199,12 +248,22 @@ class _PostCardState extends State<PostCard> {
               ))
             ],
           ),
+          //DESCRIPTION AND NUMBER OF COMMENTS
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                DefaultTextStyle(
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle2!
+                        .copyWith(fontWeight: FontWeight.w800),
+                    child: Text(
+                      '${widget.snap['likes'].length} likes',
+                      style: Theme.of(context).textTheme.bodyText2,
+                    )),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.only(
@@ -239,6 +298,13 @@ class _PostCardState extends State<PostCard> {
                     padding: const EdgeInsets.symmetric(vertical: 4),
                   ),
                   onTap: () {},
+                  // onTap: () => Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (context) => CommentsScreen(
+                  //       postId: widget.snap['postId'].toString(),
+                  //     ),
+                  //   ),
+                  // ),
                 ),
                 Container(
                   child: Text(

@@ -1,31 +1,13 @@
-// import 'package:flutter/material.dart';
-
-// class LoginScreen extends StatefulWidget {
-//   const LoginScreen({super.key});
-
-//   @override
-//   State<LoginScreen> createState() => _LoginScreenState();
-// }
-
-// class _LoginScreenState extends State<LoginScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Center(child: Text('from login screen')),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_4/resources/auth_methods.dart';
 import 'package:flutter_application_4/responsive/mobile_screen_layout.dart';
 import 'package:flutter_application_4/responsive/responsive_layout.dart';
 import 'package:flutter_application_4/responsive/web_screen_layout.dart';
+import 'package:flutter_application_4/screens/signup_screen.dart';
 import 'package:flutter_application_4/utils/colors.dart';
 import 'package:flutter_application_4/utils/global_variable.dart';
 import 'package:flutter_application_4/utils/utils.dart';
 import 'package:flutter_application_4/widgets/text_field_input.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -160,11 +142,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
                   GestureDetector(
-                    // onTap: () => Navigator.of(context).push(
-                    //   MaterialPageRoute(
-                    //     builder: (context) => const SignupScreen(),
-                    //   ),
-                    // ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const SignupScreen(),
+                      ),
+                    ),
                     child: Container(
                       child: const Text(
                         ' Signup.',
